@@ -1,4 +1,35 @@
-﻿using System;
+﻿// AUTHOR: tranh10
+// FILENAME: encryptWord.cs
+// DATE: 4/12/2018
+
+// Description: This class provide functions that available in Encryptword
+// class, does NOT hold any encrypt word. The word is passed through encrypt
+// function and the function returns encrypted word with each character shifted
+// by the |shift_value| attribute. This class is a helper class, that later
+// will be called in main function.
+
+// Legal Input:
+// *** EncryptWord: NONE
+// *** TurnOn: NONE
+// *** TurnOff: NONE
+// *** Reset: NONE
+// *** Reset: Take in an positive integer for |shift_val|
+// *** GetEncryptForWord: Take in a string of 4 or more characters of input
+//     word.
+// *** GetDecryptedForWord: Take in a string of 4 or more characters of input 
+//     word.
+// *** GuessShiftValue: Take in a positive integer as value.
+// *** GetStatistic: NONE
+// *** GetCountGuesses: NONE
+
+// Illega Input: NULL, string that has less then 4 characters and negative
+// integer.
+
+// Assumption: all int variable that input must be an integer greater or equal
+// 0.
+// shift value is limited from 1 to number of alphabet character.
+// Object includes 3 states: ON, OFF, and RESET.
+using System;
 namespace P2
 {
     public class EncryptWord
