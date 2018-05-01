@@ -1,80 +1,38 @@
-﻿// AUTHOR: tranh10
-// FILENAME: encryptWord.cs
-// DATE: 4/12/2018
-
-// Description: This class provide functions that available in Encryptword
-// class, does NOT hold any encrypt word. The word is passed through encrypt
-// function and the function returns encrypted word with each character shifted
-// by the |shift_value| attribute. This class is a helper class, that later
-// will be called in main function.
-
-// Legal Input:
-// *** EncryptWord: NONE
-// *** TurnOn: NONE
-// *** TurnOff: NONE
-// *** Reset: NONE
-// *** Reset: Take in an positive integer for |shift_val|
-// *** GetEncryptForWord: Take in a string of 4 or more characters of input
-//     word.
-// *** GetDecryptedForWord: Take in a string of 4 or more characters of input 
-//     word.
-// *** GuessShiftValue: Take in a positive integer as value.
-// *** GetStatistic: NONE
-// *** GetCountGuesses: NONE
-
-// Illega Input: NULL, string that has less then 4 characters and negative
-// integer.
-
-// Assumption: all int variable that input must be an integer greater or equal
-// 0.
-// shift value is limited from 1 to number of alphabet character.
-// Object includes 3 states: ON, OFF, and RESET.
-
-using System;
-
-namespace Application
+﻿using System;
+namespace P2
 {
     public class EncryptWord
     {
-        private int shift_value_;
+        private int shift_value;
         private int count_guesses;
         private int high_guesses;
         private int low_guesses;
         private int total_guess_value;
         private bool status;
         private const int NUM_ALPHABET = 26;
-
-        // Description: Randomize a integer value, and assigns it to
-        // |shift_value|. At the beginning, the state of object is ON.
-        //
-        // Pre-condition: None.
-        //
-        // Post-condition: |count_guess|, |total_guess_value|, |high_guess|,
-        // |low_guess| are zeroes, and |shift_value| is an integer between 0
-        // and 25.
-        public EncryptWord(int value) {
+        
+        public EncryptWord(int value)
+        {
             shift_value = value;
             count_guesses = 0;
             high_guesses = 0;
             low_guesses = 0;
-            total_guess_value = 0;        
+            total_guess_value = 0;
+            status = true;
         }
 
-        // Description: Checks if the object status is on/off.
-        //
-        // Pre-condition: None.
-        //
-        // Post-condition: Return a boolean represent the state of the system.
         public bool IsOn() {
             return status;
         }
+
 
         // Description: Change status of |this| Encryptor from off to on.
         //
         // Pre-condition: |status| is off.
         //
         // Post-condition: |status| is on.
-        public void TurnOn() {
+        public void TurnOn()
+        {
             status = true;
         }
 
@@ -83,7 +41,8 @@ namespace Application
         // Pre-condition: |status| is on.
         //
         // Post-condition: |status| is off.
-        public void TurnOff() {
+        public void TurnOff()
+        {
             status = false;
         }
 
@@ -93,10 +52,11 @@ namespace Application
         // Pre-condition: State of object must be OFF
         //
         // Post-condition: State of object ON, reset the statistic
-        public void Reset() {
+        public void Reset()
+        {
             TurnOn();
             Random random = new Random();
-            shift_value_ = random.Next(NUM_ALPHABET);
+            shift_value = random.Next(NUM_ALPHABET);
             count_guesses = 0;
             high_guesses = 0;
             low_guesses = 0;
@@ -109,9 +69,10 @@ namespace Application
         // Pre-condition: NULL
         //
         // Post-condition: Reset statistic
-        public void Reset(int shift_val) {
+        public void Reset(int shift_val)
+        {
             Reset();
-            shift_value_ = shift_val;
+            shift_value = shift_val;
         }
 
 
@@ -127,14 +88,15 @@ namespace Application
         //   - Otherwise, return the encrypted string, where each alphabet
         //   character (between 'a' - 'z' and 'A' - 'Z') is shifted |shift_value|.
         //   The special characters (i.e. Not in the alphabet) is kept the same.
-        public string GetEncryptForWord(string word) {
+        public string GetEncryptForWord(string word)
+        {
             if (!status)
             {
                 Console.WriteLine("System is off!");
                 return "";
             }
             string result = "";
-            for (size_t i = 0; i < word.length(); i++)
+            for (int i = 0; i < word.Length; i++)
             {
                 if (word[i] < 'A' || word[i] > 'z' || (word[i] > 'Z' && word[i] < 'a'))
                 {
@@ -142,13 +104,12 @@ namespace Application
                     continue;
                 }
 
-                bool is_not_capitalized = ('a' <= word[i] && word[i] <= 'z');
 
-                int baseNum = is_not_capitalized ? 'a' : 'A';
-                int offset = word[i] - baseNum;
-                int index = is_not_capitalized ? offset : offset + NUM_ALPHABET;
+                char basechar = ('A' <= word[i] && word[i] <= 'Z') ? 'A' : 'a';
 
-                result += decrypted_chars_[index];
+                int offset = (word[i] - basechar + shift_value) % NUM_ALPHABET;
+
+                result += (char)(basechar + offset);
             }
             return result;
         }
@@ -165,14 +126,15 @@ namespace Application
         //   - Otherwise, return the encrypted string, where each alphabet
         //   character (between 'a' - 'z' and 'A' - 'Z') is shifted |shift_value|.
         //   The special characters (i.e. Not in the alphabet) is kept the same.
-        public string GetDecryptedForWord(string word) {
+        public string GetDecryptedForWord(string word)
+        {
             if (!status)
             {
                 Console.WriteLine("System is off!");
                 return "";
             }
             string result = "";
-            for (size_t i = 0; i < word.length(); i++)
+            for (int i = 0; i < word.Length; i++)
             {
                 if (word[i] < 'A' || word[i] > 'z' || (word[i] > 'Z' && word[i] < 'a'))
                 {
@@ -182,11 +144,11 @@ namespace Application
 
                 char baseNum = ('A' <= word[i] && word[i] <= 'Z') ? 'A' : 'a';
 
-                int offset = (word[i] - baseNum - shift_value_);
+                int offset = (word[i] - baseNum - shift_value);
 
                 offset += (offset < 0) ? NUM_ALPHABET : 0;
 
-                result += char(baseNum + offset);
+                result += (char)(baseNum + offset);
             }
             return result;
         }
@@ -203,24 +165,25 @@ namespace Application
         //   - Increment |count_guess|, |total_guess_value|, |high_guess|,
         //   |low_guess| according to the guess value.
         //   - Switch the state to OFF if |guess| is equals to |shift_value|.
-        public bool GuessShiftValue(int value) {
+        public bool GuessShiftValue(int value)
+        {
             if (!status)
             {
                 Console.WriteLine("System is off!");
-                return "";
+                return false;
             }
             count_guesses++;
             total_guess_value += value;
 
-            if (value == shift_value_)
+            if (value == shift_value)
             {
                 return true;
             }
-            if (value > shift_value_)
+            if (value > shift_value)
             {
                 high_guesses++;
             }
-            if (value < shift_value_)
+            if (value < shift_value)
             {
                 low_guesses++;
             }
@@ -232,11 +195,12 @@ namespace Application
         // Pre-condition: NONE.
         // Post-condition: Print the number of guesses, high guesses, low guesses,
         // and average of guess value to the console.
-        public void GetStatistic() {
-            Console.WriteLine("Number of guesses: ", count_guesses);
-            Console.WriteLine("Number of high guesses: ", high_guesses);
-            Console.WriteLine("Number of low guesses: ", low_guesses);
-            Console.WriteLine("Average guess value: ",(1.0) * total_guess_value / count_guesses);
+        public void GetStatistic()
+        {
+            Console.WriteLine("Number of guesses: {0}", count_guesses);
+            Console.WriteLine("Number of high guesses: {0}", high_guesses);
+            Console.WriteLine("Number of low guesses: {0}", low_guesses);
+            Console.WriteLine("Average guess value: {0}", (1.0) * total_guess_value / count_guesses);
         }
 
 
@@ -246,8 +210,13 @@ namespace Application
         //
         // Post-condition: An non-negative integer representing the total number of
         // guesses.
-        public int GetCountGuesses() {
+        public int GetCountGuesses()
+        {
             return count_guesses;
+        }
+
+        public int GetShiftValue() {
+            return shift_value;
         }
     }
 }
